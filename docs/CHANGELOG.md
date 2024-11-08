@@ -1,3 +1,7 @@
+#### **\[Build 1.21.1-v2.9.1\]:**
+
+- Fixed a bug with network protocol error occuring when joining some servers ([#492](https://github.com/Aizistral-Studios/No-Chat-Reports/issues/492)/[#493](https://github.com/Aizistral-Studios/No-Chat-Reports/issues/493)/[#495](https://github.com/Aizistral-Studios/No-Chat-Reports/issues/495)).
+
 #### **\[Build 1.21.1-v2.9.0\]:**
 
 - Initial 1.21.1 port;
