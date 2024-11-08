@@ -43,16 +43,22 @@ public class MixinChatComponent {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;"
 					+ "logChatMessage(Lnet/minecraft/client/GuiMessage;)V", ordinal = 0, shift = Shift.BEFORE))
 	private GuiMessage modifyGUIMessage(GuiMessage msg) {
+		if (!NCRConfig.getEncryption().isEnabledAndValid())
+			return msg;
+		else if (this.minecraft.level == null) {
+			NCRCore.LOGGER.warn("Chat message cannot be decrypted since level didn't load in yet!");
+			return msg;
+		}
+
 		if (NCRConfig.getCommon().enableDebugLog()) {
 			NCRCore.LOGGER.info("Adding chat message, structure: " +
 					Component.Serializer.toJson(msg.content(),  RegistryAccess.EMPTY));
 		}
 
-        assert minecraft.level != null;
-        var decrypted = EncryptionUtil.tryDecrypt(minecraft.level.registryAccess(), msg.content());
+		var decrypted = EncryptionUtil.tryDecrypt(this.minecraft.level.registryAccess(), msg.content());
 
 		decrypted.ifPresentOrElse(component -> {
-			this.lastMessageOriginal = EncryptionUtil.recreate(minecraft.level.registryAccess(), msg.content());
+			this.lastMessageOriginal = EncryptionUtil.recreate(this.minecraft.level.registryAccess(), msg.content());
 			this.lastMessageEncrypted = true;
 		}, () -> this.lastMessageEncrypted = false);
 
